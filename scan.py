@@ -27,7 +27,7 @@ def get_market_phase():
     return "NEUTRAL"
 
 DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK")
-JSON_FILE = "selected_positions.json"
+JSON_FILE = "selected_positions_breakout.json"
 
 # --- 決算またぎチェック関数 ---
 def is_near_earnings(ticker, days=5):
@@ -257,7 +257,15 @@ def main():
         today_str = datetime.now().strftime("%Y-%m-%d")
         new_entries = []
         for r in ranked[:10]:
-            new_entries.append({"ticker": r["ticker"], "name": r["name"], "entry_date": today_str, "entry_price": r["price"], "highest_price": r["price"]})
+            new_entries.append({
+                "ticker":        r["ticker"],
+                "name":          r["name"],
+                "entry_date":    today_str,
+                "entry_price":   r["price"],
+                "highest_price": r["price"],
+                "stop_loss":     r["stop_loss"],
+                "strategy":      "breakout",
+            })
         existing = []
         if os.path.exists(JSON_FILE):
             try:
@@ -270,7 +278,7 @@ def main():
         existing.extend(added)
         with open(JSON_FILE, "w", encoding="utf-8") as f:
             json.dump(existing, f, ensure_ascii=False, indent=2)
-        print(f"💾 selected_positions.json に {len(added)} 件追記")
+        print(f"💾 selected_positions_breakout.json に {len(added)} 件追記")
     jst = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=9)))
     p_icon = "🟢" if phase == "BULL" else "🧐"
     message = f"{p_icon} **【スキャン結果】({phase})**\n上位銘柄ランキング\n"

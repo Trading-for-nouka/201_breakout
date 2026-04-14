@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 # --- 【追加】会社名辞書作成関数 ---
 def get_ticker_to_name():
     try:
-        df_uni = pd.read_csv("universe230.csv", encoding='cp932')  # ← 変更
+        df_uni = pd.read_csv("universe230.csv", encoding='cp932')
         return dict(zip(df_uni['ticker'], df_uni['name']))
     except:
         return {}
@@ -32,8 +32,8 @@ def is_earnings_tomorrow(ticker):
 
 # --- フェーズ取得関数 ---
 def get_market_phase():
-    OWNER = "trading-for-nouka"   # ← 変更
-    REPO = "102_market_phase"     # ← 変更
+    OWNER = "trading-for-nouka"
+    REPO = "102_market_phase"
     FILE_PATH = "market_phase.json"
     TOKEN = os.environ.get("PAT_TOKEN")
     url = f"https://api.github.com/repos/{OWNER}/{REPO}/contents/{FILE_PATH}"
@@ -78,7 +78,7 @@ def monitor():
 
     for p in positions:
         ticker = p["ticker"]
-        name = ticker_to_name.get(ticker, "不明")
+        name = ticker_to_name.get(ticker, p.get("name", "不明"))
         entry_price = p["entry_price"]
         entry_date = datetime.strptime(p["entry_date"], "%Y-%m-%d")
         days_held = (datetime.now() - entry_date).days
@@ -135,6 +135,10 @@ def monitor():
         if is_exit:
             exit_messages.append(f"🔥 **{ticker} {name}**: {reason} | 損益: {profit_pct:+.1f}%")
         else:
+            p["name"] = name
+            p["strategy"] = p.get("strategy", "breakout")
+            if "stop_loss" not in p:
+                p["stop_loss"] = round(entry_price * 0.95)
             updated_positions.append(p)
             status_messages.append(f"💰 {ticker} {name}: {profit_pct:+.1f}% ({days_held}日目)")
 
