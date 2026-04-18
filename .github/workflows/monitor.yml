@@ -1,9 +1,9 @@
 name: Breakout Monitor
 
 on:
-  schedule:
-    - cron: '6 23 * * 1-5'  # 平日 08:06 JST（寄り前）
-    - cron: '49 6 * * 1-5'  # 平日 15:49 JST（引け後）
+  #schedule:
+    #- cron: '6 23 * * 1-5'  # 平日 08:06 JST（寄り前）
+    #- cron: '49 6 * * 1-5'  # 平日 15:49 JST（引け後）
   workflow_dispatch:
 
 jobs:
