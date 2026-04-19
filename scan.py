@@ -295,6 +295,13 @@ def main():
             message += "\n"
         message += f"🕒 {jst.strftime('%Y/%m/%d %H:%M')} JST\n"
     send_discord(message)
+    if ranked:
+        for r in ranked[:5]:
+            send_discord(
+                f"🛒 **{r['name']}（{r['ticker']}）**\n"
+                f"　 📌 {r['entry_low']}〜{r['entry_high']}円 | 🛑 {r['stop_loss']}円\n"
+                f"📎 {r['ticker']}|breakout|{r['price']}|{r['stop_loss']}|{r['name']}"
+            )
     if results:
         log_df = pd.DataFrame(results)
         log_df.to_csv("scan_log.csv", index=False, encoding='utf-8-sig')
