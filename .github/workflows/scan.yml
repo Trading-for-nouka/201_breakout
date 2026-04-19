@@ -29,14 +29,14 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: python scan.py
 
-      - name: Commit selected_positions.json
+      - name: Commit selected_positions_breakout.json
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          if [ -f selected_positions.json ]; then
-            git add selected_positions.json
+          if [ -f selected_positions_breakout.json ]; then
+            git add selected_positions_breakout.json
             if ! git diff --cached --quiet; then
-              git commit -m "Update selected_positions [skip ci]"
+              git commit -m "Update selected_positions_breakout [skip ci]"
               git push
             fi
           fi
