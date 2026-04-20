@@ -1,0 +1,38 @@
+[
+  {
+    "ticker": "6762.T",
+    "name": "TDK",
+    "entry_date": "2026-04-20",
+    "entry_price": 2616.0,
+    "highest_price": 2616.0,
+    "stop_loss": 2480,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "3863.T",
+    "name": "日本製紙",
+    "entry_date": "2026-04-20",
+    "entry_price": 1431.0,
+    "highest_price": 1431.0,
+    "stop_loss": 1388,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "9434.T",
+    "name": "ソフトバンク",
+    "entry_date": "2026-04-20",
+    "entry_price": 224.3,
+    "highest_price": 224.3,
+    "stop_loss": 219,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "7762.T",
+    "name": "シチズン時計",
+    "entry_date": "2026-04-20",
+    "entry_price": 1855.0,
+    "highest_price": 1855.0,
+    "stop_loss": 1801,
+    "strategy": "breakout"
+  }
+]
