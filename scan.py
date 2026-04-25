@@ -35,7 +35,6 @@ TURNOVER_FILTER = {
     "TOPIX Mid400":  1e8,
 }
 
-
 # --- 決算またぎチェック関数 ---
 def is_near_earnings(ticker, days=5):
     """今後5日以内に決算発表がある場合はTrueを返す"""
@@ -57,7 +56,7 @@ def is_near_earnings(ticker, days=5):
 def load_universe(file_path="universe496.csv"):
     if not os.path.exists(file_path):
         print(f"❌ {file_path} が見つかりません。")
-        return {}, {}
+        return {}, {}, {}
 
     df_uni = None
     for enc in ['cp932', 'utf-8-sig', 'utf-8']:
@@ -72,8 +71,8 @@ def load_universe(file_path="universe496.csv"):
             break
 
     if df_uni is None or df_uni.empty:
-        print("❌ universe230.csv の読み込みに失敗しました。列名を確認してください。")
-        return {}, {}
+        print("❌ universe496.csv の読み込みに失敗しました。列名を確認してください。")
+        return {}, {}, {}
 
     required_cols = {'ticker', 'name', 'sector'}
     actual_cols = set(df_uni.columns.str.strip().str.lower())
@@ -81,11 +80,11 @@ def load_universe(file_path="universe496.csv"):
         print(f"❌ universe496.csv の列名が不正です。")
         print(f"   必要な列: {required_cols}")
         print(f"   実際の列: {set(df_uni.columns.tolist())}")
-        return {}, {}
+        return {}, {}, {}
 
     df_uni.columns = df_uni.columns.str.strip()
 
-    ticker_to_name = dict(zip(df_uni['ticker'], df_uni['name']))
+    ticker_to_name  = dict(zip(df_uni['ticker'], df_uni['name']))
     ticker_to_index = dict(zip(df_uni['ticker'], df_uni.iloc[:, 3])) if len(df_uni.columns) >= 4 else {}
     sector_dict = {}
     for _, row in df_uni.iterrows():
@@ -140,32 +139,31 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, bench_re
         df.columns = df.columns.get_level_values(0)
     df["ma20"] = df["Close"].rolling(20).mean()
     df["ma50"] = df["Close"].rolling(50).mean()
-    df["ma75"] = df["Close"].rolling(75).mean()
     df["vol_ma20"] = df["Volume"].rolling(20).mean()
     df["vol_ma5"] = df["Volume"].rolling(5).mean()
-    df["high20"] = df["High"].rolling(20).max()
     df["high250"] = df["High"].rolling(250).max()
     latest = df.iloc[-1]
     l_close = float(latest["Close"])
-    l_high = float(latest["High"])
-    l_low = float(latest["Low"])
-    ma25 = float(latest["ma20"])
-    ma50 = float(latest["ma50"])
-    ma75 = float(latest["ma75"])
+    l_high  = float(latest["High"])
+    l_low   = float(latest["Low"])
+    ma20 = float(latest["ma20"])   # ← MA20
+    ma50 = float(latest["ma50"])   # ← MA50
     rvol_today = float(latest["Volume"]) / latest["vol_ma20"] if latest["vol_ma20"] > 0 else 0
     rvol_short = latest["vol_ma5"] / latest["vol_ma20"] if latest["vol_ma20"] > 0 else 0
     stock_ret20 = df["Close"].pct_change(20).iloc[-1]
     if pd.isna(stock_ret20):
         return None
     relative_strength = stock_ret20 - bench_return_20
+
+    # ── フィルター条件 ────────────────────────────────────────────────
     if l_close < ma20:
         print(f"  ✗ {ticker} スキップ: MA20下")
         return None
-    high10_prev = float(df["High"].rolling(7).max().iloc[-2])
+    high7_prev = float(df["High"].rolling(7).max().iloc[-2])   # ← 7日高値
     if l_close <= high7_prev:
         print(f"  ✗ {ticker} スキップ: 7日高値ブレイクアウト未達")
         return None
-    if relative_strength <= 0.03:
+    if relative_strength <= 0.03:   # ← +3%以上
         print(f"  ✗ {ticker} スキップ: RS不足（＋3%未満）")
         return None
     high250_val = float(df["high250"].iloc[-1])
@@ -179,9 +177,11 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, bench_re
     if is_near_earnings(ticker):
         print(f"  ✗ {ticker} スキップ: 決算近接")
         return None
+
+    # ── スコア計算 ────────────────────────────────────────────────────
     score = 0
     reasons = []
-    if ma20 > ma75:
+    if ma20 > ma50:   # ← MA20 > MA50
         score += 20
         reasons.append(f"トレンド良好+20")
     if relative_strength > 0.05:
@@ -190,7 +190,7 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, bench_re
     elif relative_strength > 0.02:
         score += 10
         reasons.append(f"RS並+10({relative_strength*100:.1f}%)")
-    if rvol_today >= 2.0:
+    if rvol_today >= 2.0:   # ← RVOL 2.0倍以上
         score += 15
         reasons.append(f"出来高急増+15(RVOL:{rvol_today:.2f})")
     body_ratio = (l_close - l_low) / (l_high - l_low) if (l_high - l_low) > 0 else 0
@@ -208,16 +208,16 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, bench_re
     atr14 = float((df["High"] - df["Low"]).rolling(14).mean().iloc[-1])
     levels = calc_breakout_levels(l_close, atr14)
     return {
-        "ticker": ticker,
-        "name": ticker_to_name.get(ticker, "Unknown"),
-        "score": score,
-        "close": round(l_close, 2),
-        "price": round(l_close, 2),
-        "sector": sector,
-        "rvol": round(rvol_today, 2),
-        "rs": round(relative_strength * 100, 2),
-        "ma25": round(ma25, 2),
-        "atr14": round(atr14, 2),
+        "ticker":     ticker,
+        "name":       ticker_to_name.get(ticker, "Unknown"),
+        "score":      score,
+        "close":      round(l_close, 2),
+        "price":      round(l_close, 2),
+        "sector":     sector,
+        "rvol":       round(rvol_today, 2),
+        "rs":         round(relative_strength * 100, 2),
+        "ma20":       round(ma20, 2),
+        "atr14":      round(atr14, 2),
         "entry_low":  levels["entry_low"],
         "entry_high": levels["entry_high"],
         "stop_loss":  levels["stop_loss"],
@@ -246,7 +246,7 @@ def main():
         tickers += list(stocks.keys())
     print(f"📥 データ取得中... {len(tickers)}銘柄")
     if not tickers:
-        msg = "❌ universe230.csv から銘柄を読み込めませんでした。"
+        msg = "❌ universe496.csv から銘柄を読み込めませんでした。"
         print(msg)
         send_discord(msg)
         return
