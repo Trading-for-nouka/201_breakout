@@ -14,8 +14,8 @@ STRATEGY_PARAMS = {
         "stop_atr_mult":    1.5,
         "target_rr":        2.0,
         "hold_days":        21,
-        "win_rate":         0.53,
-        "profit_factor":    1.25,
+        "win_rate":         0.477,
+        "profit_factor":    1.67,
     },
 
     # ============================================================
