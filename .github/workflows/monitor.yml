@@ -29,14 +29,14 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: python monitor.py
 
-      - name: Commit positions.json
+      - name: Commit and push breakout_positions.json
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          if [ -f positions.json ]; then
-            git add positions.json
-            if ! git diff --cached --quiet; then
-              git commit -m "Update positions [skip ci]"
-              git push
-            fi
-          fi
+            if [ -f breakout_positions.json ]; then
+                git add breakout_positions.json
+                if ! git diff --cached --quiet; then
+                  git commit -m "Update breakout_positions [skip ci]"
+                  git push
+                fi
+              fi
