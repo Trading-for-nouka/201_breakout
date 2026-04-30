@@ -46,7 +46,7 @@ def get_market_phase():
     return "NEUTRAL"
 
 DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK")
-POS_FILE = "positions.json"
+POS_FILE = "breakout_positions.json"
 
 def send_discord(message):
     if DISCORD_WEBHOOK:
