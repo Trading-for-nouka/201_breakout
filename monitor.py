@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 # --- 【追加】会社名辞書作成関数 ---
 def get_ticker_to_name():
     try:
-        df_uni = pd.read_csv("universe230.csv", encoding='cp932')
+        df_uni = pd.read_csv("universe496.csv", encoding='cp932')
         return dict(zip(df_uni['ticker'], df_uni['name']))
     except:
         return {}
