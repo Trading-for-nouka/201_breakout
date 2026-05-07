@@ -291,7 +291,7 @@ def main():
 
     jst = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=9)))
     p_icon = "🟢" if phase == "BULL" else "🧐"
-    message = f"{p_icon} **【スキャン結果】({phase})**\n上位銘柄ランキング\n"
+    message = f"[201_breakout] {p_icon} **【スキャン結果】({phase})**\n上位銘柄ランキング\n"
     if not ranked:
         message += "ℹ️ 該当する銘柄はありませんでした。"
         message += f"🕒 {jst.strftime('%Y/%m/%d %H:%M')} JST\n"
