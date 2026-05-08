@@ -88,5 +88,59 @@
     "highest_price": 5571.0,
     "stop_loss": 5404,
     "strategy": "breakout"
+  },
+  {
+    "ticker": "3436.T",
+    "name": "ＳＵＭＣＯ",
+    "entry_date": "2026-05-08",
+    "entry_price": 3578.0,
+    "highest_price": 3578.0,
+    "stop_loss": 3300,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "6141.T",
+    "name": "ＤＭＧ森精機",
+    "entry_date": "2026-05-08",
+    "entry_price": 3735.0,
+    "highest_price": 3735.0,
+    "stop_loss": 3564,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "6479.T",
+    "name": "ミネベアミツミ",
+    "entry_date": "2026-05-08",
+    "entry_price": 3380.0,
+    "highest_price": 3380.0,
+    "stop_loss": 3238,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "6506.T",
+    "name": "安川電機",
+    "entry_date": "2026-05-08",
+    "entry_price": 6367.0,
+    "highest_price": 6367.0,
+    "stop_loss": 6039,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "6525.T",
+    "name": "ＫＯＫＵＳＡＩ　ＥＬＥＣＴＲＩＣ",
+    "entry_date": "2026-05-08",
+    "entry_price": 7358.0,
+    "highest_price": 7358.0,
+    "stop_loss": 6890,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "6856.T",
+    "name": "堀場製作所",
+    "entry_date": "2026-05-08",
+    "entry_price": 23170.0,
+    "highest_price": 23170.0,
+    "stop_loss": 22411,
+    "strategy": "breakout"
   }
 ]
