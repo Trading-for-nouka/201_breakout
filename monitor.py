@@ -47,6 +47,30 @@ def get_market_phase():
 
 DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK")
 POS_FILE = "breakout_positions.json"
+PENDING_FILE = "pending_exits.json"
+
+
+def _add_to_pending_exits(pos: dict, reason: str, strategy: str) -> None:
+    """pending_exits.json に決済予定を記録（重複チェック付き）。"""
+    pending = []
+    if os.path.exists(PENDING_FILE):
+        try:
+            with open(PENDING_FILE, "r", encoding="utf-8") as f:
+                pending = json.load(f)
+        except Exception:
+            pending = []
+    if pos["ticker"] not in {e["ticker"] for e in pending}:
+        pending.append({
+            "ticker":        pos["ticker"],
+            "name":          pos.get("name", ""),
+            "strategy":      strategy,
+            "reason":        reason,
+            "stop_order_id": pos.get("stop_order_id", ""),
+            "qty":           pos.get("qty", 100),
+            "created_at":    str(datetime.now().date()),
+        })
+        with open(PENDING_FILE, "w", encoding="utf-8") as f:
+            json.dump(pending, f, ensure_ascii=False, indent=2)
 
 def send_discord(message):
     if DISCORD_WEBHOOK:
@@ -134,6 +158,8 @@ def monitor():
             
         if is_exit:
             exit_messages.append(f"🔥 **{ticker} {name}**: {reason} | 損益: {profit_pct:+.1f}%")
+            _add_to_pending_exits(p, reason, "breakout")
+            updated_positions.append(p)
         else:
             p["name"] = name
             p["strategy"] = p.get("strategy", "breakout")
