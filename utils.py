@@ -1,25 +1,31 @@
-import yfinance as yf
-import pandas as pd
 import os
-from datetime import datetime, timedelta
+import requests
 
-def get_data(tickers, days_back=200):
-    start_date = (datetime.now() - timedelta(days=days_back)).strftime('%Y-%m-%d')
-    
-    # 複数銘柄を一括ダウンロード（通信回数を最小化）
-    data = yf.download(tickers, start=start_date, interval="1d", group_by='ticker', threads=True)
-    return data
+DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK")
 
-def calculate_indicators(df):
-    # MA
-    df['MA25'] = df['Close'].rolling(window=25).mean()
-    df['MA75'] = df['Close'].rolling(window=75).mean()
-    
-    # ATR (True Rangeの簡略版)
-    high_low = df['High'] - df['Low']
-    high_close = (df['High'] - df['Close'].shift()).abs()
-    low_close = (df['Low'] - df['Close'].shift()).abs()
-    tr = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
-    df['ATR'] = tr.rolling(window=14).mean()
-    
-    return df
+
+def get_market_phase() -> str:
+    """102_market_phase から市場フェーズを取得。失敗時は NEUTRAL。"""
+    TOKEN = os.environ.get("PAT_TOKEN")
+    url = "https://api.github.com/repos/trading-for-nouka/102_market_phase/contents/market_phase.json"
+    headers = {
+        "Authorization": f"token {TOKEN}" if TOKEN else "",
+        "Accept": "application/vnd.github.v3.raw"
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        if response.status_code == 200:
+            return response.json().get("phase", "NEUTRAL")
+    except Exception as e:
+        print(f"⚠️ フェーズ取得失敗（NETURALで継続）: {e}")
+    return "NEUTRAL"
+
+
+def send_discord(message: str) -> None:
+    """Discord webhook 送信。失敗時はログのみ。"""
+    if not DISCORD_WEBHOOK:
+        return
+    try:
+        requests.post(DISCORD_WEBHOOK, json={"content": message}, timeout=10)
+    except Exception as e:
+        print(f"⚠️ Discord通知失敗: {e}")
