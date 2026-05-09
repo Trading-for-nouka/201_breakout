@@ -1,30 +1,13 @@
 import yfinance as yf
 import pandas as pd
 import numpy as np
-import requests
 import os
 import json
 from datetime import datetime, timedelta, timezone
 from strategy_params import calc_breakout_levels
 from claude_comment import generate_comments_batch
+from utils import get_market_phase, send_discord
 
-# --- フェーズ取得関数 ---
-def get_market_phase():
-    OWNER = "trading-for-nouka"
-    REPO = "102_market_phase"
-    FILE_PATH = "market_phase.json"
-    TOKEN = os.environ.get("PAT_TOKEN")
-    url = f"https://api.github.com/repos/{OWNER}/{REPO}/contents/{FILE_PATH}"
-    headers = {"Authorization": f"token {TOKEN}" if TOKEN else "", "Accept": "application/vnd.github.v3.raw"}
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        if response.status_code == 200:
-            return response.json().get("phase", "NEUTRAL")
-    except Exception as e:
-        print(f"⚠️ フェーズ取得失敗: {e}")
-    return "NEUTRAL"
-
-DISCORD_WEBHOOK = os.environ.get("DISCORD_WEBHOOK")
 JSON_FILE = "selected_positions_breakout.json"
 
 TURNOVER_FILTER = {
@@ -46,7 +29,7 @@ def is_near_earnings(ticker, days=5):
         today    = datetime.now().date()
         deadline = today + timedelta(days=days)
         return today <= earnings_date <= deadline
-    except:
+    except Exception:
         return False
 
 # --- CSV読み込み ---
@@ -212,10 +195,6 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
         "hold_days":  levels["hold_days"],
     }
 
-def send_discord(message):
-    try: requests.post(DISCORD_WEBHOOK, json={"content": message})
-    except: pass
-
 def main():
     phase = get_market_phase()
     if phase in ["CRASH", "RISK_OFF"]:
@@ -280,8 +259,10 @@ def main():
         existing_tickers = {p["ticker"] for p in existing}
         added = [e for e in new_entries if e["ticker"] not in existing_tickers]
         existing.extend(added)
-        with open(JSON_FILE, "w", encoding="utf-8") as f:
+        tmp_path = JSON_FILE + ".tmp"
+        with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(existing, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_path, JSON_FILE)
         print(f"💾 selected_positions_breakout.json に {len(added)} 件追記")
 
     # コメント生成（失敗してもランキング結果は維持）
