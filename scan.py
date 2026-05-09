@@ -198,7 +198,7 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
 def main():
     phase = get_market_phase()
     if phase in ["CRASH", "RISK_OFF"]:
-        send_discord(f"🛑 **【{phase}モード】新規エントリー停止中**")
+        send_discord(f"[201_breakout] 🛑 **【{phase}モード】新規エントリー停止中**")
         return
 
     # 1306.T を1回だけ取得して check_market・ベンチ計算・セクター強度すべてに使用
@@ -212,7 +212,7 @@ def main():
     for sector, stocks in sector_stocks.items():
         tickers += list(stocks.keys())
     if not tickers:
-        msg = "❌ universe496.csv から銘柄を読み込めませんでした。"
+        msg = "[201_breakout] ❌ universe496.csv から銘柄を読み込めませんでした。"
         print(msg); send_discord(msg)
         return
     print(f"📥 データ取得中... {len(tickers)}銘柄")
@@ -289,7 +289,7 @@ def main():
     if ranked:
         for r in ranked[:5]:
             send_discord(
-                f"🛒 **{r['name']}（{r['ticker']}）**\n"
+                f"[201_breakout] 🛒 **{r['name']}（{r['ticker']}）**\n"
                 f"　 📌 {r['entry_low']}〜{r['entry_high']}円 | 🛑 {r['stop_loss']}円\n"
                 f"📎 {r['ticker']}|breakout|{r['price']}|{r['stop_loss']}|{r['name']}"
             )
