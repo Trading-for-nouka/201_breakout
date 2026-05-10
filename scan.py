@@ -146,6 +146,9 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
     if relative_strength <= 0.03:
         print(f"  ✗ {ticker} スキップ: RS不足（＋3%未満）")
         return None
+    if relative_strength > 0.07:
+        print(f"  ✗ {ticker} スキップ: RS上限超過（{relative_strength*100:.1f}%>7%）")
+        return None
     if l_close < float(df["high250"].iloc[-1]) * 0.9:
         print(f"  ✗ {ticker} スキップ: 52週高値から10%超乖離")
         return None
