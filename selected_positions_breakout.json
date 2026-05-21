@@ -160,5 +160,59 @@
     "highest_price": 3899.0,
     "stop_loss": 3687,
     "strategy": "breakout"
+  },
+  {
+    "ticker": "2531.T",
+    "name": "宝ホールディングス",
+    "entry_date": "2026-05-21",
+    "entry_price": 2014.0,
+    "highest_price": 2014.0,
+    "stop_loss": 1918,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "8377.T",
+    "name": "ほくほくフィナンシャルグループ",
+    "entry_date": "2026-05-21",
+    "entry_price": 6840.0,
+    "highest_price": 6840.0,
+    "stop_loss": 6452,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "8411.T",
+    "name": "みずほフィナンシャルグループ",
+    "entry_date": "2026-05-21",
+    "entry_price": 7370.0,
+    "highest_price": 7370.0,
+    "stop_loss": 7031,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "8308.T",
+    "name": "りそなホールディングス",
+    "entry_date": "2026-05-21",
+    "entry_price": 2133.5,
+    "highest_price": 2133.5,
+    "stop_loss": 2022,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "8334.T",
+    "name": "群馬銀行",
+    "entry_date": "2026-05-21",
+    "entry_price": 2371.0,
+    "highest_price": 2371.0,
+    "stop_loss": 2268,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "9301.T",
+    "name": "三菱倉庫",
+    "entry_date": "2026-05-21",
+    "entry_price": 1508.0,
+    "highest_price": 1508.0,
+    "stop_loss": 1449,
+    "strategy": "breakout"
   }
 ]
