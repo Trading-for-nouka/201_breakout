@@ -214,5 +214,14 @@
     "highest_price": 1508.0,
     "stop_loss": 1449,
     "strategy": "breakout"
+  },
+  {
+    "ticker": "6845.T",
+    "name": "アズビル",
+    "entry_date": "2026-05-22",
+    "entry_price": 1608.5,
+    "highest_price": 1608.5,
+    "stop_loss": 1552,
+    "strategy": "breakout"
   }
 ]
