@@ -160,7 +160,7 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
         print(f"  ✗ {ticker} スキップ: 決算近接")
         return None
 
-    # ── スコア計算 ──
+    # ── スコア計算（最大90点、50点以上でエントリー） ──
     score = 0
     if ma20 > ma50:
         score += 20
