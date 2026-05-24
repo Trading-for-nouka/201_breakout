@@ -169,7 +169,9 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
     elif relative_strength > 0.02:
         score += 10
     if rvol_today >= 2.0:
-        score += 15
+        score += 20          # 出来高十分（旧+15→+20）
+    elif rvol_today >= 1.5:
+        score += 10          # 出来高やや不足（新設）
     body_ratio = (l_close - l_low) / (l_high - l_low) if (l_high - l_low) > 0 else 0
     if body_ratio >= 0.8:
         score += 10
@@ -177,6 +179,13 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
     score += sec_score
     if not market_ok:
         score -= 20
+    # ── スコア閾値フィルター（バックテスト検証済み） ──
+    # 改善案スコア体系で50点未満はPF低迷帯（旧35点・50点相当）につき除外
+    SCORE_THRESHOLD = 50
+    if score < SCORE_THRESHOLD:
+        print(f"  ✗ {ticker} スキップ: スコア不足（{score}点 < {SCORE_THRESHOLD}点）")
+        return None
+
     print(f"  ✔ {ticker}({ticker_to_name.get(ticker, '?')}) 合計:{score}点")
     atr14  = float((df["High"] - df["Low"]).rolling(14).mean().iloc[-1])
     levels = calc_breakout_levels(l_close, atr14)
