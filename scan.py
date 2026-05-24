@@ -286,7 +286,7 @@ def main():
     p_icon = "🟢" if phase == "BULL" else "🧐"
     message = f"[201_breakout] {p_icon} **【スキャン結果】({phase})**\n上位銘柄ランキング\n"
     if not ranked:
-        message += "ℹ️ 該当する銘柄はありませんでした。"
+        message += "ℹ️ 該当する銘柄はありませんでした。(最大90点、50点以上を選定)"
         message += f"🕒 {jst.strftime('%Y/%m/%d %H:%M')} JST\n"
     else:
         for r in ranked[:10]:
