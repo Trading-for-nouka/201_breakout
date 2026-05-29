@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "ticker": "6952.T",
+    "name": "カシオ計算機",
+    "entry_date": "2026-05-29",
+    "entry_price": 1789.5,
+    "highest_price": 1789.5,
+    "stop_loss": 1704,
+    "strategy": "breakout"
+  },
+  {
+    "ticker": "4063.T",
+    "name": "信越化学工業",
+    "entry_date": "2026-05-29",
+    "entry_price": 7758.0,
+    "highest_price": 7758.0,
+    "stop_loss": 7402,
+    "strategy": "breakout"
+  }
+]
