@@ -276,7 +276,6 @@ def main():
         os.replace(tmp_path, JSON_FILE)
         print(f"💾 selected_positions_breakout.json に {len(added)} 件追記")
 
-    if ranked:
 
     jst = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=9)))
     p_icon = "🟢" if phase == "BULL" else "🧐"
