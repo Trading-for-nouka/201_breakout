@@ -5,7 +5,6 @@ import os
 import json
 from datetime import datetime, timedelta, timezone
 from strategy_params import calc_breakout_levels
-from claude_comment import generate_comments_batch
 from utils import get_market_phase, send_discord
 
 JSON_FILE = "selected_positions_breakout.json"
@@ -277,10 +276,7 @@ def main():
         os.replace(tmp_path, JSON_FILE)
         print(f"💾 selected_positions_breakout.json に {len(added)} 件追記")
 
-    # コメント生成（失敗してもランキング結果は維持）
     if ranked:
-        print("💬 Claude APIコメント生成中...")
-        ranked = generate_comments_batch("breakout", ranked, max_count=5) or ranked
 
     jst = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=9)))
     p_icon = "🟢" if phase == "BULL" else "🧐"
@@ -293,8 +289,6 @@ def main():
             message += (f"✨ **{r['ticker']} {r['name']} ({r['score']}点)**\n"
                         f"┗ 価格: {r['price']}円 | RVOL: {r['rvol']} | RS: {r['rs']}%\n"
                         f"┗ 📌 購入: {r['entry_low']}〜{r['entry_high']}円 | 🛑 損切: {r['stop_loss']}円 | 🎯 目標: {r['target']}円\n")
-            if r.get("comment"):
-                message += f"┗ 💬 {r['comment']}\n"
             message += "\n"
         message += f"🕒 {jst.strftime('%Y/%m/%d %H:%M')} JST\n"
     send_discord(message)
