@@ -257,6 +257,16 @@ def main():
                 "highest_price": r["price"],
                 "stop_loss":     r["stop_loss"],
                 "strategy":      "breakout",
+                "metrics": {                       # ← 追加
+                    "rvol":   r.get("rvol"),
+                    "rs":     r.get("rs"),
+                    "rsi":    None,                # breakoutはRSI非算出
+                    "dev":    None,
+                    "score":  r.get("score"),
+                    "sector": r.get("sector", "不明"),
+                    "atr14":  r.get("atr14"),
+                    "price":  r["price"],
+                },
             }
             for r in ranked[:10]
         ]
