@@ -175,6 +175,12 @@ def score_stock(ticker, sector, data, sector_strength, bench_return_20, market_o
     if body_ratio >= 0.8:
         score += 10
     sec_score = sector_strength.get(sector, 0)
+
+    # ★ セクター強気除外（バックテスト検証済み・PF +0.048）
+    if sec_score == 20:
+        print(f"  ✗ {ticker} スキップ: セクター強気（追い高いリスク）")
+        return None
+    
     score += sec_score
     if not market_ok:
         score -= 20
